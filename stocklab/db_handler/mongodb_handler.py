@@ -2,7 +2,9 @@ from pymongo import MongoClient
 from pymongo.cursor import CursorType
 import configparser
 
-
+# 실행전 cmd 창에서
+# net start MongoDB
+# net stop MongoDB
 class MongoDBHandler:
     """
     PyMongo를 래핑(Wrapping)해서 사용하는 클래스입니다.
