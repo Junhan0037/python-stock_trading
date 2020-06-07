@@ -1,6 +1,10 @@
 from bs4 import BeautifulSoup
 import re
 
+"""
+웹 크롤링
+"""
+
 class Crawler:
     def __init__(self):
         self.html_doc = """

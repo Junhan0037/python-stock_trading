@@ -2,7 +2,10 @@ import requests
 import configparser
 import xml.etree.ElementTree as ET
 
-# 공공데이터 포털에서 데이터를 가져오는 Data 모듈
+"""
+공공데이터 포털에서 데이터를 가져오는 Data 모듈
+"""
+
 class Data():
     CORP_CODE_URL = "http://api.seibro.or.kr/openapi/service/CorpSvc/getIssucoCustnoByNm"
     CORP_INFO_URL = "http://api.seibro.or.kr/openapi/service/CorpSvc/getIssucoBasicInfo"

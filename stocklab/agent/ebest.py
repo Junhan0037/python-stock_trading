@@ -4,6 +4,10 @@ import pythoncom
 from datetime import datetime
 import time
 
+"""
+Ebest API
+"""
+
 class XASession: # 서버 연결, 로그인
     # 로그인 상태를 확인하기 위한 클래스변수
     login_state = 0

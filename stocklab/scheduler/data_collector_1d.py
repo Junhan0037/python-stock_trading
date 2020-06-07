@@ -3,6 +3,10 @@ import time
 from stocklab.agent.ebest import EBest
 from stocklab.db_handler.mongodb_handler import MongoDBHandler
 
+"""
+윈도우 스케줄러
+"""
+
 # 데이터 수집 실행
 mongodb = MongoDBHandler()
 ebest = EBest("DEMO")
