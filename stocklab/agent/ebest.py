@@ -52,7 +52,7 @@ class EBest:
         :param mode:str - 모의서버는 DEMO 실서버는 PROD로 구분
         """
         if mode not in ["PROD", "DEMO", "ACE"]:
-            raise Exception("Need to run_mode(PROD or DEMO)")
+            raise Exception("Need to run_mode(PROD or DEMO or ACE)")
 
         run_mode = "EBEST_" + mode
         config = configparser.ConfigParser()
@@ -409,7 +409,7 @@ class EBest:
         :return result:dict 하루치 분당 가격 정보
         """
         in_params = {"shcode":code,"ncnt":"1", "qrycnt":"500", "nday":"1", "sdate":date, 
-                "stime":"090000", "edate":date, "etime":"153000", "cts_date":"00000000", 
+                "stime":"090000", "edate":date, "etime":"153000", "cts_date":"00000000",
                 "cts_time":"0000000000", "comp_yn":"N"}
         out_params = ["date", "time", "open", "high", "low", "close", "jdiff_vol", "value"]
 
