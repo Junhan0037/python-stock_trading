@@ -51,7 +51,7 @@ class EBest:
         xa_session_client는 XASession 객체
         :param mode:str - 모의서버는 DEMO 실서버는 PROD로 구분
         """
-        if mode not in ["PROD", "DEMO"]:
+        if mode not in ["PROD", "DEMO", "ACE"]:
             raise Exception("Need to run_mode(PROD or DEMO)")
 
         run_mode = "EBEST_" + mode
@@ -401,7 +401,29 @@ class EBest:
         elif price >= 500000:
             return 1000
 
+    def get_price_n_min_by_code(self, date, code, tick=None): # 주식차트(N분)의 메서드
+        """
+        TR: t8412 주식차트(N분) 
+        :param code:str 종목코드
+        :param date:str 시작시간
+        :return result:dict 하루치 분당 가격 정보
+        """
+        in_params = {"shcode":code,"ncnt":"1", "qrycnt":"500", "nday":"1", "sdate":date, 
+                "stime":"090000", "edate":date, "etime":"153000", "cts_date":"00000000", 
+                "cts_time":"0000000000", "comp_yn":"N"}
+        out_params = ["date", "time", "open", "high", "low", "close", "jdiff_vol", "value"]
 
+        result_list = self._execute_query("t8412",
+                                    "t8412InBlock",
+                                    "t8412OutBlock1",
+                                    *out_params,
+                                    **in_params)
+        result = {}
+        for idx, item in enumerate(result_list):
+            result[idx] = item
+        if tick is not None:
+            return result[tick]
+        return result
 
 
 ########################################################################################################################
