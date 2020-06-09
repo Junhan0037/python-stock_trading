@@ -7,7 +7,7 @@ import datetime
 # API 서버의 기본 코드
 
 app = Flask(__name__)
-CORS(app)
+CORS(app) # CORS : 보안 정책과 관련된 사항으로, 요청하는 client와 server의 도메인이나 포트가 다를 때 발생할 수 있다
 api = Api(app)
 
 code_hname_to_eng = {
@@ -82,7 +82,7 @@ class CodeList(Resource):
         result_list = []
         for item in results:
             code_info = {}
-            code_info = {code_hname_to_eng[field]: item[field] for field in item.keys() if field in code_hname_to_eng} # 한글 -> 영문 필드명
+            code_info = {code_hname_to_eng[field]: item[field] for field in item.keys() if field in code_hname_to_eng} # 한글 필드명 -> 영문
             result_list.append(code_info)
         return {"code_list": result_list, "count": len(result_list)}, 200
 
@@ -97,12 +97,33 @@ class Code(Resource):
         return code_info
 
 class Price(Resource):
+    @marshal_with(price_list_fields) # 한글 필드명 -> 영문
     def get(self, code):
-        pass
+        today = datetime.datetime.now().strftime("%Y%m%d")
+        default_start_date = datetime.datetime.now() - datetime.timedelta(days=7)
+        start_date = request.args.get('start_date', default=default_start_date.strftime("%Y%m%d"), type=str)
+        end_date = request.args.get('end_date', default=today, type=str)
+        results = list(mongodb.find_items({"code": code, "날짜": {"$gte": start_date, "$lte": end_date}},
+                                          "stocklab", "price_info"))
+        result_object = {}
+        price_info_list = []
+        for item in results:
+            price_info = {price_hname_to_eng[field]: item[field] for field in item.keys() if field in price_hname_to_eng} # 한글 필드명 -> 영문
+            price_info_list.append(price_info)
+        result_object["price_list"] = price_info_list
+        result_object["count"] = len(price_info_list)
+        return result_object, 200
 
 class OrderList(Resource):
     def get(self):
-        pass
+        status = request.args.get('status', default="all", type=str)
+        if status == 'all':
+            result_list = list(mongodb.find_items({}, "stocklab_demo", "order"))
+        elif status in ["buy_ordered", "buy_completed", "sell_ordered", "sell_completed"]:
+            result_list = list(mongodb.find_items({"status": status}, "stocklab_demo", "order"))
+        else:
+            return {}, 404
+        return {"count": len(result_list), "order_list": result_list}, 200
 
 api.add_resource(CodeList, "/codes", endpoint="codes")
 api.add_resource(Code, "/codes/<string:code>", endpoint="code")
